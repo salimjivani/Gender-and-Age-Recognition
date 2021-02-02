@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>Bootstrap Example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+
+    </head>
+    <body>
+
+        <div class="jumbotron text-center">
+            <h1>Gender and Age Prediction</h1>
+            <p>Upload your image and we will guess your age and gender</p> 
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <img id="uploadedimage" scr="#" alt="Upload an Image"/>
+                    <input type="file" onchange="readURL(this);" accept=".png,jpg"/>
+                    <button type="submit">Submit</button>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+            
+
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <h1>Results</h1>
+                        <ul>
+                            <li><span>Age: </span><span id="ageresults"></span></li>
+                            <li><span>Gender: </span><span id="genderresults"></span></li>
+                        </ul>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+
+        </div>
+
+        
+
+    </body>
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#uploadedimage')
+                        .attr('src', e.target.result)
+                        .width(320)
+                        .height(350);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        //ajax call to python
+        $.ajax({
+            //url:"test.py",
+            contentType: "application/json; charset=utf-8",
+            type:"POST",
+            crossDomain: true,
+            dataType: 'json',
+            data: JSON.stringify({'lat':30.5 , 'lon' : 4.5}),
+            success: function(json)
+            {
+                console.log(json);
+            }
+        });
+
+
+    </script>
+
+</html>
