@@ -95,7 +95,7 @@ for i in range(0, detections.shape[2]):
 		genderNet.setInput(faceBlob)
 		genderPreds = genderNet.forward()
 		j = genderPreds[0].argmax()
-		gender = GENDER_BUCKETS[i]
+		gender = GENDER_BUCKETS[j]
 		print(f'Gender: {gender}')
 
 		# draw the bounding box of the face along with the associated
