@@ -30,7 +30,6 @@ def detectFace(img):
 
 def alignFace(img_path):
 	img = cv2.imread(img_path)
-	
 	img_raw = img.copy()
 
 	img, gray_img = detectFace(img)
@@ -148,10 +147,10 @@ eye_detector = cv2.CascadeClassifier(eye_detector_path)
 nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
 
-alignedFace = alignFace("Test_Images/i.jpg")
+alignedFace = alignFace("Test_Images/j.jpg")
 
-os.system("python detect_age.py --image Test_Images/i.jpg --face face_detector --age age_detector")
+os.system("python detect_age.py --image Test_Images/j.jpg --face face_detector --age age_detector")
 
-cv2.imwrite('Aligned_Images/i.jpg', alignedFace)
+cv2.imwrite('Aligned_Images/j.jpg', alignedFace)
 
-os.system("python detect_age.py --image Aligned_Images/i.jpg --face face_detector --age age_detector")
+os.system("python detect_age.py --image Aligned_Images/j.jpg --face face_detector --age age_detector")
