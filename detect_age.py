@@ -1,10 +1,11 @@
-# py detect_age.py --image images/adrian.png --face face_detector --age age_detector --gender gender_detector
+# py detect_age.py --image Test_Images/a.jpg --face face_detector --age age_detector --gender gender_detector
 
 # import the necessary packages
 import numpy as np
 import argparse
 import cv2
 import os
+import detect_gender
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -24,9 +25,6 @@ args = vars(ap.parse_args())
 AGE_BUCKETS = ["(0-2)", "(4-6)", "(8-12)", "(15-20)", "(25-32)",
 	"(38-43)", "(48-53)", "(60-100)"]
 
-# define the list of gender buckets our gender detector will predict
-GENDER_BUCKETS = ['Male','Female']
-
 # load our serialized face detector model from disk
 print("[INFO] loading face detector model...")
 prototxtPath = os.path.sep.join([args["face"], "deploy.prototxt"])
@@ -39,12 +37,6 @@ print("[INFO] loading age detector model...")
 prototxtPath = os.path.sep.join([args["age"], "age_deploy.prototxt"])
 weightsPath = os.path.sep.join([args["age"], "age_net.caffemodel"])
 ageNet = cv2.dnn.readNet(prototxtPath, weightsPath)
-
-#load serialized gender detector model from disk
-print("[INFO] loading gender detector model...")
-prototxtPath = os.path.sep.join([args["gender"], "gender_deploy.prototxt"])
-weightsPath = os.path.sep.join([args["gender"], "gender_net.caffemodel"])
-genderNet=cv2.dnn.readNet(prototxtPath,weightsPath)
 
 # load the input image and construct an input blob for the image
 image = cv2.imread(args["image"])
@@ -92,10 +84,7 @@ for i in range(0, detections.shape[2]):
 		print("[INFO] {}".format(text))
 
 		# make predictions on the gender and find the gender bucket with
-		genderNet.setInput(faceBlob)
-		genderPreds = genderNet.forward()
-		j = genderPreds[0].argmax()
-		gender = GENDER_BUCKETS[j]
+		gender  = detect_gender.getGenderPrediction(args["image"])
 		print(f'Gender: {gender}')
 
 		# draw the bounding box of the face along with the associated
