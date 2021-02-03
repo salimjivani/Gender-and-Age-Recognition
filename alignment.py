@@ -148,16 +148,16 @@ eye_detector = cv2.CascadeClassifier(eye_detector_path)
 nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
 
-alignedFace = alignFace("Test_Images/l.jpg")
+alignedFace = alignFace("Test_Images/0021.jpg")
 
-os.system("python detect_age.py --image Test_Images/l.jpg --face face_detector --age age_detector --gender gender_detector")
+os.system("python detect_age.py --image Test_Images/0021.jpg --face face_detector --age age_detector --gender gender_detector")
 
 
-width = 500
-height = 500
+width = 300
+height = 300
 dim = (width, height)
 resized_img = cv2.resize(alignedFace, dim, interpolation = cv2.INTER_AREA)
 
-cv2.imwrite('Aligned_Images/l.jpg', resized_img)
+cv2.imwrite('Aligned_Images/0021.jpg', resized_img)
 
-os.system("python detect_age.py --image Aligned_Images/l.jpg --face face_detector --age age_detector --gender gender_detector")
+os.system("python detect_age_copy.py --image Aligned_Images/0021.jpg --face face_detector --age age_detector --gender gender_detector")
