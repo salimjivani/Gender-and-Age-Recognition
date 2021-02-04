@@ -7,19 +7,16 @@ import cv2
 import os
 import detect_gender
 
+age_value = None
+gender_value = None
+path = 'Test_Images/f.jpg'
+
 # construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True,
-	help="path to input image")
-ap.add_argument("-f", "--face", required=True,
-	help="path to face detector model directory")
-ap.add_argument("-a", "--age", required=True,
-	help="path to age detector model directory")
-ap.add_argument("-g", "--gender", required=True,
-	help="path to gender detector model directory")	
-ap.add_argument("-c", "--confidence", type=float, default=0.5,
-	help="minimum probability to filter weak detections")
-args = vars(ap.parse_args())
+# ap = argparse.ArgumentParser()
+# ap.add_argument("-i", "--image", required=True,
+# 	help="path to input image")
+
+#args = vars(ap.parse_args())
 
 # define the list of age buckets our age detector will predict
 AGE_BUCKETS = ["(0-2)", "(4-6)", "(8-12)", "(15-20)", "(25-32)",
@@ -27,19 +24,20 @@ AGE_BUCKETS = ["(0-2)", "(4-6)", "(8-12)", "(15-20)", "(25-32)",
 
 # load our serialized face detector model from disk
 print("[INFO] loading face detector model...")
-prototxtPath = os.path.sep.join([args["face"], "deploy.prototxt"])
-weightsPath = os.path.sep.join([args["face"],
-	"res10_300x300_ssd_iter_140000.caffemodel"])
+prototxtPath = os.path.sep.join(['face_detector', "deploy.prototxt"])
+weightsPath = os.path.sep.join(['face_detector',"res10_300x300_ssd_iter_140000.caffemodel"])
 faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
+
 
 # load our serialized age detector model from disk
 print("[INFO] loading age detector model...")
-prototxtPath = os.path.sep.join([args["age"], "age_deploy.prototxt"])
-weightsPath = os.path.sep.join([args["age"], "age_net.caffemodel"])
+prototxtPath = os.path.sep.join(['age_detector', "age_deploy.prototxt"])
+weightsPath = os.path.sep.join(['age_detector', "age_net.caffemodel"])
 ageNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 
+
 # load the input image and construct an input blob for the image
-image = cv2.imread(args["image"])
+image = cv2.imread(path)
 (h, w) = image.shape[:2]
 blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300),
 	(104.0, 177.0, 123.0))
@@ -58,7 +56,7 @@ for i in range(0, detections.shape[2]):
 	# filter out weak detections by ensuring the confidence is
 	# greater than the minimum confidence
 	#print (confidence*100)
-	if confidence > args["confidence"]:
+	if confidence > 0.5:
 		# compute the (x, y)-coordinates of the bounding box for the
 		# object
 		box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
@@ -81,10 +79,12 @@ for i in range(0, detections.shape[2]):
 
 		# display the predicted age to our terminal
 		text = "{}: {:.2f}%".format(age, ageConfidence * 100)
+		age_value = age
 		print("[INFO] {}".format(text))
 
 		# make predictions on the gender and find the gender bucket with
-		gender  = detect_gender.getGenderPrediction(args["image"])
+		gender  = detect_gender.getGenderPrediction(path)
+		gender_value = gender
 		print(f'Gender: {gender}')
 
 		# draw the bounding box of the face along with the associated
