@@ -95,7 +95,7 @@ for i in range(0, detections.shape[2]):
 		cv2.putText(image, f'{text}, {gender}', (startX, y),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 
-cv2.imwrite('processed_images_output/0021P.jpg', image)
+cv2.imwrite('processed_images_output/0030P.jpg', image)
 # display the output image
 cv2.imshow("Image", image)
 
