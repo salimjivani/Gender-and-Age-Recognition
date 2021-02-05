@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Bootstrap Example</title>
+        <title>Gender-and-Age-Recognition</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -20,9 +20,14 @@
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4">
+
                     <img id="uploadedimage" scr="#" alt="Upload an Image"/>
-                    <input type="file" onchange="readURL(this);" accept=".png,jpg"/>
-                    <button type="button" id="submitimage">Submit</button>
+
+                    <form id="upload-form" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" onchange="readURL(this);" accept=".png,jpg"/>
+                        <button type="button" id="submitimage">Submit</button>
+                    </form>
+
                 </div>
                 <div class="col-sm-4"></div>
             </div>
@@ -64,9 +69,16 @@
             
         $("#submitimage").click(function(){
             //ajax call to python
+
+            var form_data = new FormData($('#upload-form')[0]);
+
             $.ajax({
                 url:"/getdata",
                 type:"POST",
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
                 success: function(json)
                 {
                     console.log(json);
