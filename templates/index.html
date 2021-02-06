@@ -81,6 +81,8 @@
                 processData: false,
                 success: function(json)
                 {
+                    $("#ageresults").empty();
+                    $("#genderresults").empty();
                     console.log(json);
                     $("#ageresults").append(json.age);
                     $("#genderresults").append(json.gender);
