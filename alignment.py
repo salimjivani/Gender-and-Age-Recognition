@@ -6,7 +6,22 @@ import pandas as pd
 import math
 from PIL import Image
 import glob
+import detect_age
 
+opencv_home = cv2.__file__
+folders = opencv_home.split(os.path.sep)[0:-1]
+
+path = folders[0]
+for folder in folders[1:]:
+	path = path + "/" + folder
+
+face_detector_path = path+"/data/haarcascade_frontalface_default.xml"
+eye_detector_path = path+"/data/haarcascade_eye.xml"
+nose_detector_path = path+"/data/haarcascade_mcs_nose.xml"
+
+face_detector = cv2.CascadeClassifier(face_detector_path)
+eye_detector = cv2.CascadeClassifier(eye_detector_path)
+nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
 def euclidean_distance(a, b):
 	x1 = a[0]; y1 = a[1]
@@ -36,8 +51,7 @@ def alignFace(img_path):
 	img, gray_img = detectFace(img)
 	
 	eyes = eye_detector.detectMultiScale(gray_img)
-	
-	
+		
 	if len(eyes) >= 2:
 		#find the largest 2 eye
 		
@@ -125,39 +139,23 @@ def alignFace(img_path):
 	else:new_img = cv2.imread(img_path)
 	return new_img
 	
-#------------------------
 
 #opencv path
+def alignment_fuction():
 
-opencv_home = cv2.__file__
-folders = opencv_home.split(os.path.sep)[0:-1]
+	if os.path.isfile(face_detector_path) != True:
+		raise ValueError("Confirm that opencv is installed on your environment! Expected path ",detector_path," violated.")
 
-path = folders[0]
-for folder in folders[1:]:
-	path = path + "/" + folder
+	alignedFace = alignFace("Aligned_Images/Image_Prediction.jpg")
 
-face_detector_path = path+"/data/haarcascade_frontalface_default.xml"
-eye_detector_path = path+"/data/haarcascade_eye.xml"
-nose_detector_path = path+"/data/haarcascade_mcs_nose.xml"
+	detect_age.detectAge()
 
-if os.path.isfile(face_detector_path) != True:
-	raise ValueError("Confirm that opencv is installed on your environment! Expected path ",detector_path," violated.")
+	width = 300
+	height = 300
+	dim = (width, height)
+	resized_img = cv2.resize(alignedFace, dim, interpolation = cv2.INTER_AREA)
+	cv2.imwrite('Aligned_Images/Image_Prediction.jpg', resized_img)
 
-face_detector = cv2.CascadeClassifier(face_detector_path)
-eye_detector = cv2.CascadeClassifier(eye_detector_path)
-nose_detector = cv2.CascadeClassifier(nose_detector_path)
+	age,gender= detect_age.detectAge()
 
-
-alignedFace = alignFace("Test_Images/0047.jpg")
-
-os.system("python detect_age.py --image Test_Images/0047.jpg --face face_detector --age age_detector --gender gender_detector")
-
-
-width = 300
-height = 300
-dim = (width, height)
-resized_img = cv2.resize(alignedFace, dim, interpolation = cv2.INTER_AREA)
-
-cv2.imwrite('Aligned_Images/0047.jpg', resized_img)
-
-os.system("python detect_age_copy.py --image Aligned_Images/0047.jpg --face face_detector --age age_detector --gender gender_detector")
+	return age,gender

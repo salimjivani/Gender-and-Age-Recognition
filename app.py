@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+import alignment
 
 app = Flask(__name__)
 
@@ -16,9 +17,11 @@ def getdata():
     isthisFile=request.files.get('file')
     print(isthisFile)
     print(isthisFile.filename)
-    isthisFile.save("./Aligned_Images/"+isthisFile.filename)
+    isthisFile.save("./Aligned_Images/"+"Image_Prediction.jpg")
+    
+    age, gender = alignment.alignment_fuction()
 
-    return jsonify({'gender': "M", 'age' : "(25,32)"})
+    return jsonify({'gender': gender, 'age' : age})
 
 if __name__ == '__main__':
     app.run(debug=True)
