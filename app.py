@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+import detect_age
 
 app = Flask(__name__)
 
@@ -16,9 +17,13 @@ def getdata():
     isthisFile=request.files.get('file')
     print(isthisFile)
     print(isthisFile.filename)
-    isthisFile.save("./Aligned_Images/"+isthisFile.filename)
+    isthisFile.save("./Aligned_Images/"+"Image_Prediction.jpg")
+    
+    exec(open('alignment.py').read(), globals(), globals())
+    age = detect_age.age_value
+    gender = detect_age.gender_value
 
-    return jsonify({'gender': "M", 'age' : "(25,32)"})
+    return jsonify({'gender': gender, 'age' : age})
 
 if __name__ == '__main__':
     app.run(debug=True)
