@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
-import detect_age
+import alignment
+import os
 
 app = Flask(__name__)
 
@@ -19,11 +20,18 @@ def getdata():
     print(isthisFile.filename)
     isthisFile.save("./Aligned_Images/"+"Image_Prediction.jpg")
     
-    exec(open('alignment.py').read(), globals(), globals())
-    age = detect_age.age_value
-    gender = detect_age.gender_value
+    age, gender = alignment.alignment_func()
+    #check for percent if its gtreater then modify else show old values
+    #..........
 
     return jsonify({'gender': gender, 'age' : age})
+
+@app.route('/getLiveVideo', methods=['GET','POST'])
+def getLiveStream():
+    
+    os.system("py detect_age_video.py --face face_detector --age age_detector --gender gender_detector")
+    return 
+
 
 if __name__ == '__main__':
     app.run(debug=True)
