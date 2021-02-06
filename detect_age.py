@@ -7,7 +7,7 @@ import detect_gender
 
 path = 'Aligned_Images/Image_Prediction.jpg'
 
-def detectAge():
+def detectAgeGender():
 
 	# define the list of age buckets our age detector will predict
 	AGE_BUCKETS = ["(0-2)", "(4-6)", "(8-12)", "(15-20)", "(25-32)",

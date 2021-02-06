@@ -141,14 +141,14 @@ def alignFace(img_path):
 	
 
 #opencv path
-def alignment_fuction():
+def alignment_func():
 
 	if os.path.isfile(face_detector_path) != True:
 		raise ValueError("Confirm that opencv is installed on your environment! Expected path ",detector_path," violated.")
 
 	alignedFace = alignFace("Aligned_Images/Image_Prediction.jpg")
 
-	detect_age.detectAge()
+	detect_age.detectAgeGender()
 
 	width = 300
 	height = 300
@@ -156,6 +156,6 @@ def alignment_fuction():
 	resized_img = cv2.resize(alignedFace, dim, interpolation = cv2.INTER_AREA)
 	cv2.imwrite('Aligned_Images/Image_Prediction.jpg', resized_img)
 
-	age,gender= detect_age.detectAge()
+	age,gender= detect_age.detectAgeGender()
 
 	return age,gender

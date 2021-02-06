@@ -19,7 +19,7 @@ def getdata():
     print(isthisFile.filename)
     isthisFile.save("./Aligned_Images/"+"Image_Prediction.jpg")
     
-    age, gender = alignment.alignment_fuction()
+    age, gender = alignment.alignment_func()
 
     return jsonify({'gender': gender, 'age' : age})
 
