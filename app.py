@@ -4,18 +4,14 @@ import os
 
 app = Flask(__name__)
 
-"""
 @app.route("/")
 def disclaimer():
     return render_template("disclaimer.html")
-"""
 
-#route on webpage load
-@app.route("/")
+@app.route("/index")
 def index():
     return render_template("index.html")    
 
-#route to get result from a selfie submission
 @app.route('/getdata', methods=['GET','POST'])
 def getdata():
 
@@ -30,10 +26,12 @@ def getdata():
 
     return jsonify({'gender': gender, 'age' : age})
 
-#route to the live video feed
 @app.route('/getLiveVideo', methods=['GET','POST'])
-def getLiveVideo():
-    return os.system("py detect_age_video.py --face face_detector --age age_detector --gender gender_detector")
+def getLiveStream():
+    
+    os.system("py detect_age_video.py --face face_detector --age age_detector --gender gender_detector")
+    return 
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -15,6 +15,7 @@ path = folders[0]
 for folder in folders[1:]:
 	path = path + "/" + folder
 
+#load haar cascade to detect face, nose and eyes
 face_detector_path = path+"/data/haarcascade_frontalface_default.xml"
 eye_detector_path = path+"/data/haarcascade_eye.xml"
 nose_detector_path = path+"/data/haarcascade_mcs_nose.xml"
@@ -23,6 +24,7 @@ face_detector = cv2.CascadeClassifier(face_detector_path)
 eye_detector = cv2.CascadeClassifier(eye_detector_path)
 nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
+#length of three sides od the triangle
 def euclidean_distance(a, b):
 	x1 = a[0]; y1 = a[1]
 	x2 = b[0]; y2 = b[1]
@@ -56,7 +58,6 @@ def alignFace(img_path):
 		#find the largest 2 eye
 		
 		base_eyes = eyes[:, 2]
-		#print(base_eyes)
 		
 		items = []
 		for i in range(0, len(base_eyes)):
@@ -67,8 +68,8 @@ def alignFace(img_path):
 		
 		eyes = eyes[df.idx.values[0:2]]
 		
-		#--------------------
-		#decide left and right eye
+		
+		#decide left and right eye, compare x coordinates, lower coordinates+ left eye
 		
 		eye_1 = eyes[0]; eye_2 = eyes[1]
 		
@@ -79,8 +80,8 @@ def alignFace(img_path):
 			left_eye = eye_2
 			right_eye = eye_1
 		
-		#--------------------
-		#center of eyes
+		
+		#divide coordinates to calculate the center cordinates
 		
 		left_eye_center = (int(left_eye[0] + (left_eye[2] / 2)), int(left_eye[1] + (left_eye[3] / 2)))
 		left_eye_x = left_eye_center[0]; left_eye_y = left_eye_center[1]
@@ -88,28 +89,25 @@ def alignFace(img_path):
 		right_eye_center = (int(right_eye[0] + (right_eye[2]/2)), int(right_eye[1] + (right_eye[3]/2)))
 		right_eye_x = right_eye_center[0]; right_eye_y = right_eye_center[1]
 		
-		#center_of_eyes = (int((left_eye_x+right_eye_x)/2), int((left_eye_y+right_eye_y)/2))
 		
 		cv2.circle(img, left_eye_center, 2, (255, 0, 0) , 2)
 		cv2.circle(img, right_eye_center, 2, (255, 0, 0) , 2)
-		#cv2.circle(img, center_of_eyes, 2, (255, 0, 0) , 2)
-		
-		#----------------------
-		#find rotation direction
+
+		#find rotation directionc, if left eye y coordinate is higher, rotate clockwise if not rotate counter clockwise
 		
 		if left_eye_y > right_eye_y:
 			point_3rd = (right_eye_x, left_eye_y)
-			direction = -1 #rotate same direction to clock
+			direction = -1 
 			print("rotate to clock direction")
 		else:
 			point_3rd = (left_eye_x, right_eye_y)
-			direction = 1 #rotate inverse direction of clock
+			direction = 1
 			print("rotate to inverse clock direction")
 		
-		#----------------------
 		
 		cv2.circle(img, point_3rd, 2, (255, 0, 0) , 2)
 		
+		#draw straight line from left eye to right eye
 		cv2.line(img,right_eye_center, left_eye_center,(67,67,67),1)
 		cv2.line(img,left_eye_center, point_3rd,(67,67,67),1)
 		cv2.line(img,right_eye_center, point_3rd,(67,67,67),1)
@@ -119,20 +117,14 @@ def alignFace(img_path):
 		c = euclidean_distance(right_eye_center, left_eye_center)
 		
 		cos_a = (b*b + c*c - a*a)/(2*b*c)
-		#print("cos(a) = ", cos_a)
+		
 		angle = np.arccos(cos_a)
-		#print("angle: ", angle," in radian")
 		
 		angle = (angle * 180) / math.pi
 		print("angle: ", angle," in degree")
 		
 		if direction == -1:
 			angle = 90 - angle
-		
-		print("angle: ", angle," in degree")
-		
-		#--------------------
-		#rotate image
 		
 		new_img = Image.fromarray(img_raw)
 		new_img = np.array(new_img.rotate(direction * angle))
