@@ -8,46 +8,99 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    </head>
-    <body>
+        <script type="text/javascript">
+            $(window).on('load', function() {
+                $('#myModal').modal('show');
+                $("#results").hide();
+            });
 
+        </script>
+
+    </head>
+
+    
+    <body>
+        
         <div class="jumbotron text-center">
             <h1>Gender and Age Prediction</h1>
             <p>Upload your image and we will guess your age and gender</p> 
         </div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-4">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+            
+            <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Disclaimer</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        
+                    </div>
+                    <div class="modal-body">
+                        <center><img src="https://image.flaticon.com/icons/png/128/2556/2556982.png" height="200" width="250"></center>
+                        <p>This is only for a school project. This app does not mean to discriminate against any age or sex group. We are using deep learning models trained by Tal Hassner and Gil Levi.
+                            <a href="https://talhassner.github.io/home/projects/Adience/Adience-data.html">Model Information.</a>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Enjoy</button>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
 
-                    <img id="uploadedimage" scr="#" alt="Upload an Image"/>
+        <div class="container">
+
+            <!--Choose a photo-->
+            <div class="row">
+                <div class="col-sm-4">
+                    
+                </div>
+                <div class="col-sm-4">
+                    <h3>
+                        Upload a Selfie!
+                    </h3>
+                    <img id="uploadedimage" scr="#"/>
 
                     <form id="upload-form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" onchange="readURL(this);" accept=".png,jpg"/>
-                        <button type="button" id="submitimage">Submit</button>
+                        <input type="file" name="file" onchange="readURL(this);" accept=".png,.jpg"/>
+                        <button type="button" class="btn btn-success" id="submitimage">Submit Your Selfie</button>
                     </form>
 
                 </div>
                 <div class="col-sm-4"></div>
             </div>
             
-
+            <!-- Results for uploading your selfie-->
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4">
-                    <h1>Results</h1>
+                    <div id="results">
+                        <h1>Results</h1>
                         <ul>
                             <li><h2><span>Age: </span><span id="ageresults"></span></h2></li>
                             <li><h2><span>Gender: </span><span id="genderresults"></span></h2></li>
                         </ul>
+                    </div>
+                </div>
+                <div clas
+                s="col-sm-4"></div>
+            </div>
+            
+            <!-- Go Live -->
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <div id="results">
+                        <button type="button" id="golive" class="btn btn-primary">Go Live!</button>
+                    </div>
                 </div>
                 <div class="col-sm-4"></div>
             </div>
 
         </div>
-
-        
 
     </body>
 
@@ -68,7 +121,7 @@
         }
             
         $("#submitimage").click(function(){
-            //ajax call to python
+            //ajax call to python from submitimage
 
             var form_data = new FormData($('#upload-form')[0]);
 
@@ -81,11 +134,28 @@
                 processData: false,
                 success: function(json)
                 {
+                    $("#results").show();
                     $("#ageresults").empty();
                     $("#genderresults").empty();
                     console.log(json);
                     $("#ageresults").append(json.age);
                     $("#genderresults").append(json.gender);
+                }
+            });
+        });
+
+        $("#golive").click(function(){
+            //ajax call to python to go live
+            $.ajax({
+                url:"/getLiveVideo",
+                type:"POST",
+                data: "data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(json)
+                {
+                    alert(json)
                 }
             });
         });
